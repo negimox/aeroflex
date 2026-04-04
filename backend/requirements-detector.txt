@@ -1,0 +1,18 @@
+# Detection Server Dependencies
+
+# Core
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# Computer Vision
+ultralytics>=8.1.0      # YOLOv8
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# HTTP streaming
+requests>=2.31.0
+
+# GPU support (install separately if needed)
+# torch>=2.0.0  # Usually installed with ultralytics
+# torchvision>=0.15.0
