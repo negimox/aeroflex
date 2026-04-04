@@ -1,10 +1,18 @@
+"use client"
+
 import { CameraFeed } from "@/components/camera-feed"
 import { TelemetryPanel } from "@/components/telemetry-panel"
 import { EnvironmentPanel } from "@/components/environment-panel"
 import { AQIPanel } from "@/components/aqi-panel"
 import { AppSidebar } from "@/components/app-sidebar"
+import { useModuleStatus } from "@/hooks/use-module-status"
 
 export default function Page() {
+  const { data } = useModuleStatus()
+  
+  // Check if AQI module (NodeMCU) is connected
+  const aqiConnected = data?.modules?.aqi?.connected ?? false
+
   // Mock drone telemetry data
   const telemetryData = {
     altitude: 245,
@@ -27,6 +35,16 @@ export default function Page() {
     <AppSidebar>
       <div className="px-6 py-8">
         <div className="space-y-8">
+          {/* Air Quality Section - Only shown when NodeMCU is detected */}
+          {aqiConnected && (
+            <section>
+              <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
+                Air Quality
+              </h2>
+              <AQIPanel />
+            </section>
+          )}
+
           {/* Live Camera Feed Section */}
           <section>
             <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
@@ -41,14 +59,6 @@ export default function Page() {
               Environment Sensors
             </h2>
             <EnvironmentPanel data={environmentData} />
-          </section>
-
-          {/* Air Quality Section */}
-          <section>
-            <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
-              Air Quality
-            </h2>
-            <AQIPanel />
           </section>
 
           {/* Telemetry Data Section */}

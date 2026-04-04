@@ -122,7 +122,7 @@ async def module_status():
     # Re-check NodeMCU connection
     detect_nodemcu()
     
-    # Determine active module (priority: camera > aqi > payload)
+    # Determine active module (priority: camera > aqi)
     active = None
     if camera_connected:
         active = "camera"
@@ -151,15 +151,6 @@ async def module_status():
                     "sensor": "MQ135",
                     "mcu": "NodeMCU",
                     "accuracy": "±5%"
-                }
-            },
-            "payload": {
-                "id": "payload", 
-                "name": "Payload Module",
-                "connected": False,
-                "specs": {
-                    "max_weight": "2.5kg",
-                    "release": "Electromagnetic"
                 }
             }
         },

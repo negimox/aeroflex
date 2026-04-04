@@ -17,7 +17,6 @@ export interface ModuleStatusData {
   modules: {
     camera: Module
     aqi: Module
-    payload: Module
   }
   active_module: string | null
 }
@@ -101,12 +100,7 @@ export function useModuleStatus(): UseModuleStatusReturn {
               connected: false,
               specs: { sensor: 'MQ135', mcu: 'NodeMCU', accuracy: '±5%' }
             },
-            payload: {
-              id: 'payload',
-              name: 'Payload Module',
-              connected: false,
-              specs: { max_weight: '2.5kg', release: 'Electromagnetic' }
-            }
+           
           },
           active_module: cameraConnected ? 'camera' : null
         })

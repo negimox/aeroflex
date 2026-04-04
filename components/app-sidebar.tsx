@@ -25,13 +25,11 @@ import { useModuleStatus, Module } from '@/hooks/use-module-status'
 const MODULE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   camera: Camera,
   aqi: Wind,
-  payload: Package,
 }
 
 const MODULE_COLORS: Record<string, string> = {
   camera: '#E53935',
   aqi: '#43A047',
-  payload: '#1E88E5',
 }
 
 interface AppSidebarProps {
@@ -86,7 +84,7 @@ export function AppSidebar({ children }: AppSidebarProps) {
               </SidebarGroupLabel>
               <SidebarGroupContent className="space-y-1 px-2">
                 {Object.values(data.modules)
-                  .filter((m) => !m.connected)
+                  .filter((m) => !m.connected && m.id !== 'payload')
                   .map((module) => (
                     <InactiveModuleItem key={module.id} module={module} />
                   ))}
