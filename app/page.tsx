@@ -1,7 +1,8 @@
-import { SiteHeader } from "@/components/site-header"
 import { CameraFeed } from "@/components/camera-feed"
 import { TelemetryPanel } from "@/components/telemetry-panel"
-import { FlightMap } from "@/components/flight-map"
+import { EnvironmentPanel } from "@/components/environment-panel"
+import { AQIPanel } from "@/components/aqi-panel"
+import { AppSidebar } from "@/components/app-sidebar"
 
 export default function Page() {
   // Mock drone telemetry data
@@ -15,10 +16,16 @@ export default function Page() {
     status: "Active",
   }
 
+  // Environment sensor data
+  const environmentData = {
+    temperature: 26,
+    humidity: 36,
+    pressure: 1013,
+  }
+
   return (
-    <main className="min-h-screen bg-background">
-      <SiteHeader />
-      <div className="px-4 py-8 sm:px-6 lg:px-8">
+    <AppSidebar>
+      <div className="px-6 py-8">
         <div className="space-y-8">
           {/* Live Camera Feed Section */}
           <section>
@@ -28,20 +35,28 @@ export default function Page() {
             <CameraFeed />
           </section>
 
+          {/* Environment Sensors Section */}
+          <section>
+            <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
+              Environment Sensors
+            </h2>
+            <EnvironmentPanel data={environmentData} />
+          </section>
+
+          {/* Air Quality Section */}
+          <section>
+            <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
+              Air Quality
+            </h2>
+            <AQIPanel />
+          </section>
+
           {/* Telemetry Data Section */}
           <section>
             <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
               Telemetry Data
             </h2>
             <TelemetryPanel data={telemetryData} />
-          </section>
-
-          {/* Flight Analysis Section */}
-          <section>
-            <h2 className="text-sm uppercase tracking-[0.18em] text-muted-foreground mb-4 font-semibold">
-              Flight Analysis
-            </h2>
-            <FlightMap />
           </section>
 
           {/* System Status */}
@@ -70,6 +85,6 @@ export default function Page() {
           </section>
         </div>
       </div>
-    </main>
+    </AppSidebar>
   )
 }

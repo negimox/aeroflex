@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Camera, AlertCircle } from "lucide-react";
+import { Card } from "./ui/card";
 
 // Detection server running on localhost
 const DETECTOR_URL = "http://localhost:8001";
@@ -68,6 +70,27 @@ export function CameraFeed() {
   };
 
   const summary = getDetectionSummary();
+
+  // Show "Camera Module Not Detected" card when offline
+  if (!isConnected && error) {
+    return (
+      <Card className="p-8 flex flex-col items-center justify-center text-center aspect-video">
+        <div className="p-4 rounded-full bg-muted mb-4">
+          <Camera className="w-10 h-10 text-muted-foreground" />
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          <AlertCircle className="w-4 h-4 text-red-500" />
+          <h3 className="text-lg font-semibold text-foreground">
+            Camera Module Not Detected
+          </h3>
+        </div>
+        <p className="text-sm text-muted-foreground max-w-sm">
+          Unable to connect to the camera feed. Please ensure the detection server is running.
+        </p>
+       
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -153,20 +176,6 @@ export function CameraFeed() {
             </>
           )}
         </div>
-
-        {/* Error overlay */}
-        {error && !isConnected && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70">
-            <div className="text-center">
-              <p className="text-red-400 font-mono text-sm mb-2">{error}</p>
-              <p className="text-muted-foreground text-xs">
-                {mode === "detection"
-                  ? "Start detector.py on your PC"
-                  : "Check Pi connection"}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Detection Summary Panel */}
