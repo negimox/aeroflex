@@ -5,6 +5,10 @@ Uses YOLOv8 on GPU to process MJPEG stream and serve annotated frames.
 Optimized for small object detection (cellphones, tape, etc.)
 """
 
+# Fix OpenMP conflict between PyTorch/numpy/opencv
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import io
 import time
 import threading
@@ -22,16 +26,16 @@ from ultralytics import YOLO
 # Configuration
 PI_STREAM_URL = "http://10.97.233.251:8000/video_feed"
 
-# YOLOv8s (small) is better for detecting small objects like phones, tape
-# Options: yolov8n.pt (fastest), yolov8s.pt (balanced), yolov8m.pt (most accurate)
-MODEL_NAME = "yolov8s.pt"
+# YOLOv8m (medium) - better accuracy for person/object classification
+# Options: yolov8n.pt (fastest), yolov8s.pt (fast), yolov8m.pt (balanced), yolov8l.pt (accurate)
+MODEL_NAME = "yolov8m.pt"
 
-# Lower confidence for small/hard-to-detect objects
-CONFIDENCE_THRESHOLD = 0.25
+# Confidence threshold - 0.45 balances accuracy vs detection rate
+CONFIDENCE_THRESHOLD = 0.45
 
-# Input size for inference (larger = better small object detection, slower)
-# 640 is default, 800-1280 better for small objects
-INFERENCE_SIZE = 640
+# Input size for inference - 800 is better for medium distance + small objects
+# Higher = better small object detection but slower (640, 800, 1024, 1280)
+INFERENCE_SIZE = 800
 
 # Global state
 model: Optional[YOLO] = None
@@ -96,14 +100,14 @@ def process_stream():
                         continue
 
                     # Run YOLOv8 inference with optimized settings
-                    # - Lower conf threshold for small objects
-                    # - imgsz controls input resolution
                     results = model(
                         frame, 
                         verbose=False, 
                         conf=CONFIDENCE_THRESHOLD,
                         imgsz=INFERENCE_SIZE,
-                        iou=0.45,  # NMS IoU threshold
+                        iou=0.4,  # Lower NMS IoU = fewer duplicate boxes
+                        max_det=50,  # Limit max detections per frame
+                        augment=False,  # Disable test-time augmentation for speed
                     )
 
                     # Draw detections
